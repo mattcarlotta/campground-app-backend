@@ -1,0 +1,31 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "bluebird": "^3.4.7",
+    "body-parser": "^1.15.2",
+    "connect-redis": "^3.2.0",
+    "cors": "^2.8.1",
+    "express": "^4.14.0",
+    "express-load": "^1.1.15",
+    "express-session": "^1.14.2",
+    "ioredis": "^2.5.0",
+    "jwt-simple": "^0.5.1",
+    "mongoose": "^4.7.5",
+    "morgan": "^1.7.0",
+    "nodemon": "^1.11.0",
+    "passport": "^0.3.2",
+    "passport-jwt": "^2.2.1",
+    "passport-local": "^1.0.0",
+    "redis": "^2.6.3"
+  }
+}
