@@ -13,7 +13,10 @@ const localLogin = new LocalStrategy(localOptions, function(username, password, 
   // if it is the correct email and password
   // otherwise, call done with false
   User.findOne({ username: username }, function(err, user) {
-    if (err) { return done(err); }
+    if (err) {
+      res.status(422).json({ err: 'The username you/ve entered is already is in use!' });
+      return done(err);
+    }
     if (!user) { return done(null, false); }
 
     //compare passwords - is supplied password === user.password?

@@ -10,21 +10,24 @@ function tokenForUser(user) {
 }
 
 exports.signedin = function(req, res, next) {
-  const userid = req.body.id;
+  const decodedId = config.decode(req.body.id);
 
-  User.findById(userid).exec(function(err, existingUser) {
-    if (err) { return next(err) }
+  User.findById(decodedId).exec(function(err, existingUser) {
+    if (err) {
+      res.status(401).json({ err: 'There was a problem with your login credentials. Please sign in again!' });
+      return next(err) }
     if (!existingUser) { return next(null, false); }
-    console.log(existingUser.username);
-    res.json({ user: existingUser.username });
+
+    res.status(200).json({ user: existingUser.username });
   })
 }
 
 exports.signin = function(req, res, next) {
   // User has already had email + password auth'd
   // they just need a token
-  console.log(req.user.username);
-  res.send({ token: tokenForUser(req.user), userId: req.user._id, user: req.user.username });
+  const encodedId = config.encode(req.user._id.toString())
+
+  res.send({ token: tokenForUser(req.user), userId: encodedId, user: req.user.username, message: 'Succesfully signed up! Welcome to yelp camp!' });
 }
 
 exports.signup = function (req, res, next) {
@@ -34,7 +37,7 @@ exports.signup = function (req, res, next) {
 
 
   if (!email || !username || !password) {
-    return res.status(422).send({ error: 'You must provide a valid email, username and password' });
+    return res.status(422).send({ err: 'You must provide a valid email, username and password' });
   }
   // check if email already exists
   User.findOne({ email: email, username: username }, function(err, existingUser) {
@@ -42,7 +45,7 @@ exports.signup = function (req, res, next) {
 
       // if email exists, return an error
     if (existingUser) {
-      return res.status(422).send( { error: 'That email and/or username is currently in use!' });
+      return res.status(422).send( { err: 'That email and/or username is currently in use!' });
     }
 
       // if new user, create and save user record
@@ -55,8 +58,9 @@ exports.signup = function (req, res, next) {
     user.save(function(err) {
       if (err) { return next(err) }
 
+      const encodedId = config.encode(user._id.toString());
       // respond to request indicating the user was created
-      res.json({ token: tokenForUser(user) });
+      res.json({ token: tokenForUser(user), userId: encodedId, user: user.username, message: 'Succesfully signed up! Welcome to yelp camp!'  });
     });
   });
 }
