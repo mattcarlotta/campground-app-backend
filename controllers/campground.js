@@ -3,7 +3,7 @@ const Campground = require('../models/campground');
 exports.index = function(req, res){
 	Campground.find({}, function(err, allCampgrounds){
       if(err){
-        console.log(err);
+        res.status(500).json({ error: 'error' });
       } else {
         res.status(201).json({campgrounds: allCampgrounds});
 			}
@@ -12,11 +12,11 @@ exports.index = function(req, res){
 
 exports.create = function(req, res){
 	const newCampground = req.body;
-  Campground.create(newCampground, function(error, message){
-    if(error){
-        res.status(500).json({ error: error });
+  Campground.create(newCampground, function(err, message){
+    if(err){
+        res.status(500).json({ err: 'There was a problem creating the campground, please try again later' });
       } else {
-        res.status(201).json({ message: "Success", error: '' });
+        res.status(201).json({ message: 'Succesfully added a new campground!' });
       }
   });
 }
@@ -24,33 +24,31 @@ exports.create = function(req, res){
 exports.show = function(req, res){
 Campground.findById(req.params.id).populate("comments").exec(function(err, foundCampground){
   if(err){
-      res.status(404).json({ error: error });
+      res.status(404).json({ err: 'There was a problem finding the campground, please try again later' });
     } else {
       // render show template with that campground ID
     	res.status(201).json({campground: foundCampground});
     }
 	});
 }
+
 exports.update = function(req, res){
 	var updateCampground = req.body;
-  Campground.findByIdAndUpdate(updateCampground.id, updateCampground, function(error, updatedCampground){
-    if(error){
-        res.status(404).json({ error: error });
+  Campground.findByIdAndUpdate(updateCampground.id, updateCampground, function(err, updatedCampground){
+    if(err){
+        res.status(404).json({ err: 'There was a problem updating the campground, please try again later' });
       } else {
-        res.status(201).json({
-          message: "Success",
-          error: '',
-          updatedCampground: req.params.id
-      });
+        res.status(201).json({ updatedCampground: 'Succesfully edited the campground!'});
     }
   });
 }
+
 exports.delete = function(req, res){
-	Campground.findByIdAndRemove(req.params.id, function(error, message){
-    if(error){
-        res.status(500).json({ error: error });
+	Campground.findByIdAndRemove(req.params.id, function(err, message){
+    if(err){
+        res.status(500).json({ err: 'There was a problem deleting the campground, please try again later' });
       } else {
-        res.status(201).json({ message: "Success", error: '' });
+        res.status(201).json({ message: 'Succesfully deleted the campground!' });
     }
   });
 }
