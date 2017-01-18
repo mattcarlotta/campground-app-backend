@@ -29,7 +29,7 @@ exports.signin = function(req, res, next) {
   // they just need a token
   const encodedId = config.encode(req.user._id.toString())
 
-  res.send({ token: tokenForUser(req.user), userId: encodedId, user: req.user.username, message: 'Succesfully signed up! Welcome to yelp camp!' });
+  res.send({ token: tokenForUser(req.user), userId: encodedId, user: req.user.username, message: 'Welcome back to yelp camp!' });
 }
 
 exports.signup = function (req, res, next) {

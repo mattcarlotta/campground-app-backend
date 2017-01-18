@@ -24,11 +24,14 @@ exports.create = function(req, res){
 exports.show = function(req, res){
 Campground.findById(req.params.id).populate("comments").exec(function(err, foundCampground){
   if(err){
-      res.status(404).json({ err: 'There was a problem finding the campground, please try again later' });
-    } else {
+
+      res.status(404).json({ err: 'There was a problem locating the campground, please try again later' });
+    } else if (!foundCampground) {
+			res.status(404).json({ err: 'There was a problem locating the campground. It was either deleted or does not exist!' });	
+		} else {
       // render show template with that campground ID
     	res.status(201).json({campground: foundCampground});
-    }
+		}
 	});
 }
 
