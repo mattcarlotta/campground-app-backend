@@ -2,6 +2,7 @@ const express   = require("express");
 const app    = express.Router();
 
 const Campground = require('../controllers/campground');
+// const userHelper = require('../middleware/userHelper');
 
 app.get("/", Campground.index);
 app.post("/new", Campground.create);

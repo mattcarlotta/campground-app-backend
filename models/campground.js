@@ -4,12 +4,10 @@ var campgroundSchema = new mongoose.Schema({
   name: String,
   image: String,
   description: String,
+  location: String,
+  zip: String,
   author: {
-    id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User"
-    },
-    username: String
+    type: String,
   },
   comments: [
     {

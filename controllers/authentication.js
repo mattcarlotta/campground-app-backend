@@ -15,7 +15,9 @@ exports.signedin = function(req, res, next) {
   User.findById(decodedId).exec(function(err, existingUser) {
     if (err) {
       res.status(401).json({ err: 'There was a problem with your login credentials. Please sign in again!' });
-      return next(err) }
+      return next(err)
+    }
+
     if (!existingUser) { return next(null, false); }
 
     res.status(200).json({ user: existingUser.username });
@@ -41,12 +43,10 @@ exports.signup = function (req, res, next) {
   }
   // check if email already exists
   User.findOne({ email: email, username: username }, function(err, existingUser) {
-    if (err) { return next(err) }
+    if (err) return next(err);
 
       // if email exists, return an error
-    if (existingUser) {
-      return res.status(422).send( { err: 'That email and/or username is currently in use!' });
-    }
+    if (existingUser) return next(err);
 
       // if new user, create and save user record
     const user = new User({
@@ -56,7 +56,10 @@ exports.signup = function (req, res, next) {
     });
 
     user.save(function(err) {
-      if (err) { return next(err) }
+      if (err) {
+        res.status(422).send( { err: 'That email and/or username is currently in use!' });
+        return next(err)
+      }
 
       const encodedId = config.encode(user._id.toString());
       // respond to request indicating the user was created
