@@ -2,6 +2,7 @@ const jwt = require('jwt-simple');
 
 const User = require('../models/user');
 const config = require('../config/vars');
+const helpers = require('../helpers/helpers');
 
 
 function tokenForUser(user) {
@@ -10,7 +11,7 @@ function tokenForUser(user) {
 }
 
 exports.signedin = function(req, res, next) {
-  const decodedId = config.decode(req.body.id);
+  const decodedId = helpers.decode(req.body.id);
 
   User.findById(decodedId).exec(function(err, existingUser) {
     if (err) {
@@ -27,7 +28,7 @@ exports.signedin = function(req, res, next) {
 exports.signin = function(req, res, next) {
   // User has already had email + password auth'd
   // they just need a token
-  const encodedId = config.encode(req.user._id.toString())
+  const encodedId = helpers.encode(req.user._id.toString())
 
   res.send({ token: tokenForUser(req.user), userId: encodedId, user: req.user.username, message: 'Welcome back to yelp camp!' });
 }
@@ -61,7 +62,7 @@ exports.signup = function (req, res, next) {
         return next(err)
       }
 
-      const encodedId = config.encode(user._id.toString());
+      const encodedId = helpers.encode(user._id.toString());
       // respond to request indicating the user was created
       res.json({ token: tokenForUser(user), userId: encodedId, user: user.username, message: 'Succesfully signed up! Welcome to yelp camp!'  });
     });
