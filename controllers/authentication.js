@@ -32,8 +32,7 @@ exports.signin = function(req, res, next) {
   // User has already had email + password auth'd
   // they just need a token
   const encodedId = userHelper.encode(req.user._id.toString())
-
-  res.send({ token: tokenForUser(req.user), userId: encodedId, user: req.user.username, joinedAt: existingUser.joinedAt, favorites: existingUser.favorites, message: 'Welcome back to yelp camp!' });
+  res.send({ token: tokenForUser(req.user), userId: encodedId, user: req.user.username, joinedAt: req.user.joinedAt, favorites: req.user.favorites, message: 'Welcome back to yelp camp!' });
 }
 
 exports.signup = function (req, res, next) {
@@ -69,7 +68,7 @@ exports.signup = function (req, res, next) {
 
       const encodedId = userHelper.encode(user._id.toString());
       // respond to request indicating the user was created
-      res.json({ token: tokenForUser(user), userId: encodedId, user: user.username, message: 'Succesfully signed up! Welcome to yelp camp!'  });
+      res.json({ token: tokenForUser(user), userId: encodedId, user: user.username, joinedAt:user.joinedAt, favorites: user.favorites, message: 'Succesfully signed up! Welcome to yelp camp!'  });
     });
   });
 }
