@@ -1,8 +1,9 @@
 const jwt = require('jwt-simple');
+const moment = require('moment');
 
 const User = require('../models/user');
 const config = require('../config/vars');
-const helpers = require('../helpers/helpers');
+const userHelper = require('../helpers/helpers');
 
 
 function tokenForUser(user) {
@@ -11,7 +12,7 @@ function tokenForUser(user) {
 }
 
 exports.signedin = function(req, res, next) {
-  const decodedId = helpers.decode(req.body.id);
+  const decodedId = userHelper.decode(req.body.id);
 
   User.findById(decodedId).exec(function(err, existingUser) {
     if (err) {
@@ -20,23 +21,26 @@ exports.signedin = function(req, res, next) {
     }
 
     if (!existingUser) { return next(null, false); }
-
-    res.status(200).json({ user: existingUser.username });
+    if (existingUser.favorites.length === 0) {
+      existingUser.favorites = 'empty';
+    }
+    res.status(200).json({ user: existingUser.username, joinedAt: existingUser.joinedAt, favorites: existingUser.favorites });
   })
 }
 
 exports.signin = function(req, res, next) {
   // User has already had email + password auth'd
   // they just need a token
-  const encodedId = helpers.encode(req.user._id.toString())
+  const encodedId = userHelper.encode(req.user._id.toString())
 
-  res.send({ token: tokenForUser(req.user), userId: encodedId, user: req.user.username, message: 'Welcome back to yelp camp!' });
+  res.send({ token: tokenForUser(req.user), userId: encodedId, user: req.user.username, joinedAt: existingUser.joinedAt, favorites: existingUser.favorites, message: 'Welcome back to yelp camp!' });
 }
 
 exports.signup = function (req, res, next) {
   const email = req.body.email;
   const password = req.body.password;
   const username = req.body.username;
+  const joinedAt = moment().unix();
 
 
   if (!email || !username || !password) {
@@ -53,7 +57,8 @@ exports.signup = function (req, res, next) {
     const user = new User({
       email: email,
       username: username,
-      password: password
+      password: password,
+      joinedAt: joinedAt
     });
 
     user.save(function(err) {
@@ -62,7 +67,7 @@ exports.signup = function (req, res, next) {
         return next(err)
       }
 
-      const encodedId = helpers.encode(user._id.toString());
+      const encodedId = userHelper.encode(user._id.toString());
       // respond to request indicating the user was created
       res.json({ token: tokenForUser(user), userId: encodedId, user: user.username, message: 'Succesfully signed up! Welcome to yelp camp!'  });
     });

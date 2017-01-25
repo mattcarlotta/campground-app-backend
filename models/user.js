@@ -6,7 +6,15 @@ const bcrypt = require('bcrypt-nodejs');
 const userSchema = new Schema({
   email: { type: String, unique: true, lowercase: true },
   username: { type: String, unique: true, lowercase: true },
-  password: String
+  password: String,
+  joinedAt: String,
+  avatar: String,
+  favorites: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Campground"
+    }
+  ]
 });
 
 // On save hook, encrypt password
