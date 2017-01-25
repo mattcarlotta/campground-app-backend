@@ -27,7 +27,7 @@ Campground.findById(req.params.id).populate("comments").exec(function(err, found
 
       res.status(404).json({ err: 'There was a problem locating the campground, please try again later' });
     } else if (!foundCampground) {
-			res.status(404).json({ err: 'There was a problem locating the campground. It was either deleted or does not exist!' });	
+			res.status(404).json({ err: 'There was a problem locating the campground. It was either deleted or does not exist!' });
 		} else {
       // render show template with that campground ID
     	res.status(201).json({campground: foundCampground});
