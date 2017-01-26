@@ -33,11 +33,12 @@ exports.create = function(req, res){
 /* COMMENT UPDATE */
 //============================================================//
 exports.update = function(req, res){
-  Comment.findByIdAndUpdate(req.params.comment_id, req.body.comment, function(err, updatedComment){
+  Comment.findByIdAndUpdate(req.body.commentId, req.body.comment, function(err, updatedComment){
     if(err){
         res.status(500).json({ err: 'There was a problem updating the comment, please try again later' });
       } else {
-        res.status(201).json({ updatedCampground: 'Succesfully edited the comment!'});
+        console.log(updatedComment);
+        res.status(201).json({ message: 'Succesfully edited the comment!'});
     }
   });
 }
