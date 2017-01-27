@@ -37,7 +37,6 @@ exports.update = function(req, res){
     if(err){
         res.status(500).json({ err: 'There was a problem updating the comment, please try again later' });
       } else {
-        console.log(updatedComment);
         res.status(201).json({ message: 'Succesfully edited the comment!'});
     }
   });
