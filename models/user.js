@@ -12,7 +12,7 @@ const userSchema = new Schema({
   favorites: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Campground"
+      ref: "Favorite"
     }
   ]
 });

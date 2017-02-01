@@ -1,6 +1,6 @@
 const Campground = require('../models/campground');
 
-exports.index = function(req, res){
+exports.indexCampgrounds = function(req, res){
 	Campground.find({}, function(err, allCampgrounds){
       if(err){
         res.status(500).json({ error: 'error' });
@@ -10,7 +10,7 @@ exports.index = function(req, res){
 	});
 }
 
-exports.create = function(req, res){
+exports.createCampground = function(req, res){
 	const newCampground = req.body;
   Campground.create(newCampground, function(err, message){
     if(err){
@@ -21,7 +21,7 @@ exports.create = function(req, res){
   });
 }
 
-exports.show = function(req, res){
+exports.showCampgrounds = function(req, res){
 Campground.findById(req.params.id).populate("comments").exec(function(err, foundCampground){
   if(err){
 
@@ -35,7 +35,7 @@ Campground.findById(req.params.id).populate("comments").exec(function(err, found
 	});
 }
 
-exports.update = function(req, res){
+exports.updateCampground = function(req, res){
 	var updateCampground = req.body;
   Campground.findByIdAndUpdate(updateCampground.id, updateCampground, function(err, updatedCampground){
     if(err){
@@ -46,7 +46,7 @@ exports.update = function(req, res){
   });
 }
 
-exports.delete = function(req, res){
+exports.deleteCampground = function(req, res){
 	Campground.findByIdAndRemove(req.params.id, function(err, message){
     if(err){
         res.status(500).json({ err: 'There was a problem deleting the campground, please try again later' });

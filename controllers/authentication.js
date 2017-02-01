@@ -40,6 +40,7 @@ exports.signup = function (req, res, next) {
   const password = req.body.password;
   const username = req.body.username;
   const joinedAt = moment().unix();
+  const favorites = [];
 
 
   if (!email || !username || !password) {
@@ -57,7 +58,8 @@ exports.signup = function (req, res, next) {
       email: email,
       username: username,
       password: password,
-      joinedAt: joinedAt
+      joinedAt: joinedAt,
+      favorites: favorites
     });
 
     user.save(function(err) {

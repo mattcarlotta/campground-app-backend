@@ -8,15 +8,15 @@ const cors        = require('cors');
 //============================================================//
 /* REQUIRED ROUTES */
 //============================================================//
-const Campground    = require("./models/campground");
-const Comment       = require("./models/comment");
+// const Campground    = require("./models/campground");
+// const Comment       = require("./models/comment");
     // seedDB        = require("./seeds"),
     // User          = require("./models/user");
 
 const commentRoutes    = require("./routes/comments");
 const campgroundRoutes = require("./routes/campgrounds");
 const authRoutes       = require("./routes/authentication");
-    // resultRoutes     = require("./routes/results");
+const favoriteRoutes   = require("./routes/favorites");
 
 //============================================================//
 //* SERVER & APP CONFIG */  //============================================================//
@@ -65,7 +65,7 @@ app.use(authRoutes);
 // appends all routes with "/campgrounds" in front of them
 app.use("/campgrounds", campgroundRoutes)
 app.use("/campgrounds/:id/comments", commentRoutes);
-// app.use(resultRoutes);
+app.use("/favorites", favoriteRoutes);
 
 
 // start app ===============================================

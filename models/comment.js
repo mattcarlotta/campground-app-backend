@@ -9,6 +9,7 @@ const commentSchema = mongoose.Schema({
   },
   updatedAt: String,
   author: String,
+  campground: String
 });
 
 module.exports = mongoose.model("Comment", commentSchema);

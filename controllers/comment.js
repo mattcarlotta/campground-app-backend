@@ -4,7 +4,7 @@ const Comment = require('../models/comment');
 //============================================================//
 /* COMMENT CREATE Route -- create a new comment */
 //============================================================//
-exports.create = function(req, res){
+exports.createComment = function(req, res){
   const campgroundId = req.body.id;
 
   Campground.findById(campgroundId, function(err,campground){
@@ -32,11 +32,12 @@ exports.create = function(req, res){
 //============================================================//
 /* COMMENT UPDATE */
 //============================================================//
-exports.update = function(req, res){
+exports.updateComment = function(req, res){
   Comment.findByIdAndUpdate(req.body.commentId, req.body.comment, function(err, updatedComment){
     if(err){
         res.status(500).json({ err: 'There was a problem updating the comment, please try again later' });
       } else {
+        console.log(updatedComment);
         res.status(201).json({ message: 'Succesfully edited the comment!'});
     }
   });
@@ -45,7 +46,7 @@ exports.update = function(req, res){
 //============================================================//
 /* COMMENT DESTROY */
 //============================================================//
-exports.delete = function(req, res){
+exports.deleteComment = function(req, res){
   Campground.findById(req.body.id, function(err,campground){
     if(err){
       res.status(500).json({ err: 'There was a problem updating the comment, please try again later' });
