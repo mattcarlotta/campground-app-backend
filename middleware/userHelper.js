@@ -3,6 +3,11 @@ const Schema = mongoose.Schema;
 const bcrypt = require('bcrypt-nodejs');
 
 const User = require('../models/user');
+const userHelper = require('../helpers/helpers');
+
+
+exports.isLoggedIn = isLoggedIn;
+
 
 function encryptCurrentUser (req, res, done) {
   const username = req.body.author;
@@ -21,4 +26,15 @@ function encryptCurrentUser (req, res, done) {
   });
 }
 
-exports.getCurrentUser = getCurrentUser;
+function isLoggedIn (req, res, done) {
+  const decodedId = userHelper.decode(req.body.userId);
+
+  User.findById(decodedId).exec(function(err, user) {
+    if (err || !user) {
+      res.status(401).json({ err: 'There was a problem with your login credentials. Please sign in again!' });
+      return done();
+    }
+    req.user = decodedId;
+    return done();
+  })
+}

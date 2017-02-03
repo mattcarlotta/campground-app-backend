@@ -12,27 +12,48 @@ function tokenForUser(user) {
 }
 
 exports.signedin = function(req, res, next) {
-  const decodedId = userHelper.decode(req.body.id);
-
-  User.findById(decodedId).exec(function(err, existingUser) {
-    if (err) {
-      res.status(401).json({ err: 'There was a problem with your login credentials. Please sign in again!' });
-      return next(err)
-    }
-
-    if (!existingUser) { return next(null, false); }
-    if (existingUser.favorites.length === 0) {
-      existingUser.favorites = 'empty';
-    }
-    res.status(200).json({ user: existingUser.username, joinedAt: existingUser.joinedAt, favorites: existingUser.favorites });
-  })
+  const userId = req.user; // pulled from userHelper isLoggedIn middleware
+  const campgroundFields = { id: 1, name: 1 }
+    User.findById(userId)
+    .populate({
+        path:"favorites",
+        populate:{
+          path: 'campground',
+          select: campgroundFields,
+        }
+     })
+    .exec(function(err, existingUser) {
+      if (err) {
+        res.status(401).json({ err: 'There was a problem with your login credentials. Please sign in again!' });
+        return next(err)
+      }
+      if (!existingUser) { return next(null, false); }
+      res.status(200).json({ user: existingUser.username, joinedAt: existingUser.joinedAt, favorites: existingUser.favorites });
+    })
 }
 
+
 exports.signin = function(req, res, next) {
-  // User has already had email + password auth'd
-  // they just need a token
   const encodedId = userHelper.encode(req.user._id.toString())
-  res.send({ token: tokenForUser(req.user), userId: encodedId, user: req.user.username, joinedAt: req.user.joinedAt, favorites: req.user.favorites, message: 'Welcome back to yelp camp!' });
+  const userId = req.user._id; // pulled
+  const campgroundFields = { id: 1, name: 1 }
+    User.findById(userId)
+    .populate({
+        path:"favorites",
+        populate:{
+          path: 'campground',
+          select: campgroundFields,
+        }
+     })
+    .exec(function(err, existingUser) {
+      if (err) {
+        res.status(401).json({ err: 'There was a problem with your login credentials. Please sign in again!' });
+        return next(err)
+      }
+      if (!existingUser) { return next(null, false); }
+
+      res.status(200).json({ token: tokenForUser(req.user), userId: encodedId, user: existingUser.username, joinedAt: existingUser.joinedAt, favorites: existingUser.favorites });
+    })
 }
 
 exports.signup = function (req, res, next) {
