@@ -6,7 +6,7 @@ exports.createFavorite = createFavorite;
 
 function createFavorite(req, res, done){
   const newFavorite = { user: req.user, campground: req.body.campgroundId };
-  console.log(req.user);
+  console.log(req.body);
   Favorite.create(newFavorite, function(err, favorite){
     if (err) return res.status(500).json({ message: 'Oops! Something went wrong!' });
     User.update({ _id: req.user }, { $push: { favorites: favorite }}, function(err){

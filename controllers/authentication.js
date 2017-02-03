@@ -13,7 +13,7 @@ function tokenForUser(user) {
 
 exports.signedin = function(req, res, next) {
   const userId = req.user; // pulled from userHelper isLoggedIn middleware
-  const campgroundFields = { id: 1, name: 1 }
+  const campgroundFields = { id: 1, name: 1, location: 1 }
     User.findById(userId)
     .populate({
         path:"favorites",
