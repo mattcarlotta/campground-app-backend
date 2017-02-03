@@ -64,7 +64,7 @@ app.set('json spaces', 2);
 app.use(authRoutes);
 // appends all routes with "/campgrounds" in front of them
 app.use("/campgrounds", campgroundRoutes)
-app.use("/campgrounds/:id/comments", commentRoutes);
+app.use("/campgrounds/:id/comment", commentRoutes);
 app.use("/favorites", favoriteRoutes);
 
 

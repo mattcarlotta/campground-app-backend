@@ -47,7 +47,7 @@ exports.updateComment = function(req, res){
 /* COMMENT DESTROY */
 //============================================================//
 exports.deleteComment = function(req, res){
-  Campground.findById(req.body.id, function(err,campground){
+  Campground.findById(req.body.campgroundId, function(err,campground){
     if(err){
       res.status(500).json({ err: 'There was a problem updating the comment, please try again later' });
     } else {
