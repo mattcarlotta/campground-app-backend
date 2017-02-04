@@ -36,7 +36,7 @@ exports.signedin = function(req, res, next) {
 exports.signin = function(req, res, next) {
   const encodedId = userHelper.encode(req.user._id.toString())
   const userId = req.user._id; // pulled
-  const campgroundFields = { id: 1, name: 1 }
+  const campgroundFields = { id: 1, name: 1, location: 1 }
     User.findById(userId)
     .populate({
         path:"favorites",
