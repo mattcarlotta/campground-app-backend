@@ -2,8 +2,6 @@ const User = require('../models/user');
 const Favorite = require('../models/favorite');
 
 exports.createFavorite = createFavorite;
-
-
 function createFavorite(req, res, done){
   const newFavorite = { user: req.user, campground: req.body.campgroundId };
 
@@ -11,11 +9,32 @@ function createFavorite(req, res, done){
     if (err) return res.status(500).json({ message: 'Oops! Something went wrong!' });
     User.update({ _id: req.user }, { $push: { favorites: favorite }}, function(err){
       if(err) return res.status(500).json({ err: 'There was a problem saving this favorite' });
-      console.log(req.user);
       res.status(201).json({ message: 'Succesfully added to favorites!' });
     });
   });
 
+}
+
+exports.showFavorite = showFavorite;
+function showFavorite(req, res, done) {
+  const userId = req.user; // pulled from userHelper isLoggedIn middleware
+  const campgroundFields = { id: 1, name: 1, location: 1 }
+    User.findById(userId)
+    .populate({
+        path:"favorites",
+        populate:{
+          path: 'campground',
+          select: campgroundFields,
+        }
+     })
+    .exec(function(err, existingUser) {
+      if (err) {
+        res.status(401).json({ err: 'There was a problem with your login credentials. Please sign in again!' });
+        return next(err)
+      }
+      if (!existingUser) { return next(null, false); }
+      res.status(200).json({ favorites: existingUser.favorites });
+    })
 }
 
  //
