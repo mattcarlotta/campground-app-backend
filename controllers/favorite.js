@@ -1,8 +1,7 @@
 const User = require('../models/user');
 const Favorite = require('../models/favorite');
 
-exports.createFavorite = createFavorite;
-function createFavorite(req, res, done){
+exports.createFavorite = function(req, res, done){
   const newFavorite = { user: req.user, campground: req.body.campgroundId };
 
   Favorite.create(newFavorite, function(err, favorite){
@@ -15,8 +14,7 @@ function createFavorite(req, res, done){
 
 }
 
-exports.showFavorite = showFavorite;
-function showFavorite(req, res, done) {
+exports.fetchFavorites = function(req, res, done) {
   const userId = req.user; // pulled from userHelper isLoggedIn middleware
   const campgroundFields = { id: 1, name: 1, location: 1 }
     User.findById(userId)
