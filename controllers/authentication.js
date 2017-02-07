@@ -17,6 +17,7 @@ exports.signedin = function(req, res, next) {
     User.findById(userId)
     .populate({
         path:"favorites",
+        select: 'campground',
         populate:{
           path: 'campground',
           select: campgroundFields,
@@ -40,6 +41,7 @@ exports.signin = function(req, res, next) {
     User.findById(userId)
     .populate({
         path:"favorites",
+        select: 'campground',
         populate:{
           path: 'campground',
           select: campgroundFields,

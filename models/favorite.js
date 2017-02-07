@@ -4,7 +4,7 @@ const favoriteSchema = mongoose.Schema({
   user: String,
   campground:
     {
-      type: mongoose.Schema.Types.ObjectId,
+      type: String,
       ref: "Campground"
     }
 });
