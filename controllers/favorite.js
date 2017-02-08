@@ -37,22 +37,12 @@ exports.fetchFavorites = function(req, res, done) {
 }
 
 exports.deleteFavorite = function(req, res){
-  console.log(req.body);
-  console.log(req.user);
-  const userId = req.user;
-  User.findById(userId, function(err,user){
+  // const userId = req.user;
+  Favorite.findByIdAndRemove(req.body.favoriteId, function(err){
     if(err){
-      res.status(500).json({ err: 'There was a problem locating your username, please try again later' });
+      res.status(500).json({ err: 'There was a problem removing the favorite, please try again later' });
     } else {
-      user.favorites.remove(req.body.favoriteId);
-      user.save();
-      Favorite.findByIdAndRemove(req.body.favoriteId, function(err){
-        if(err){
-          res.status(500).json({ err: 'There was a problem removing the favorite, please try again later' });
-        } else {
-          res.status(201).json({ message: 'Succesfully removed from your favorites!' });
-        }
-      });
+      res.status(201).json({ message: 'Successfully removed from your favorites!' });
     }
   });
 }
