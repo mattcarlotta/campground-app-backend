@@ -28,7 +28,12 @@ function encryptCurrentUser (req, res, done) {
 
 function isLoggedIn (req, res, done) {
   // const encodedId = req.body.userId ? req.body.userId : req.params.id;
-  const decodedId = req.body.userId ? userHelper.decode(req.body.userId) : userHelper.decode(req.params.id);
+
+  const decodedId = req.body.userId ? userHelper.decode(req.body.userId) : userHelper.decode(req.params.id, function(err) {
+    if(err)
+      res.status(401).json({ err: 'There was a problem with your login credentials. Please sign in again!' });
+      return done();
+  });
   // const decodedId = userHelper.decode(encodedId);
 
   User.findById(decodedId).exec(function(err, user) {

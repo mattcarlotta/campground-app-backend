@@ -36,7 +36,8 @@ Campground.findById(req.params.id).populate("comments").exec(function(err, found
 }
 
 exports.updateCampground = function(req, res){
-	var updateCampground = req.body;
+	const updateCampground = req.body;
+
   Campground.findByIdAndUpdate(updateCampground.id, updateCampground, function(err, updatedCampground){
     if(err){
         res.status(404).json({ err: 'There was a problem updating the campground, please try again later' });
