@@ -37,22 +37,36 @@ Campground.findById(req.params.id).populate("comments").exec(function(err, found
 
 exports.updateCampground = function(req, res){
 	const updateCampground = req.body;
-
-  Campground.findByIdAndUpdate(updateCampground.id, updateCampground, function(err, updatedCampground){
-    if(err){
-        res.status(404).json({ err: 'There was a problem updating the campground, please try again later' });
-      } else {
-        res.status(201).json({ updatedCampground: 'Succesfully edited the campground!'});
-    }
-  });
+	Campground.findById(updateCampground.id, function(err, foundCampground){
+		if (err) {
+			res.status(404).json({ err: 'There was a problem updating the campground, please try again later' });
+		} else if (req.username !== foundCampground.author) {
+				res.status(403).json({ denied: 'You do not have permission to do that!'});
+		} else {
+			foundCampground.update(updateCampground, function(err, updatedCampground){
+		    if(err){
+		      res.status(404).json({ err: 'There was a problem updating the campground, please try again later' });
+				}
+	        res.status(201).json({ updatedCampground: 'Succesfully edited the campground!'});
+		  });
+		}
+	});
 }
 
 exports.deleteCampground = function(req, res){
-	Campground.findByIdAndRemove(req.params.id, function(err, message){
-    if(err){
-        res.status(500).json({ err: 'There was a problem deleting the campground, please try again later' });
-      } else {
-        res.status(201).json({ message: 'Succesfully deleted the campground!' });
-    }
-  });
+	console.log(req.params.id);
+	Campground.findById(req.params.id, function(err, foundCampground){
+		if (err) {
+			res.status(404).json({ err: 'There was a problem updating the campground, please try again later' });
+		} else if (req.username !== foundCampground.author) {
+				res.status(403).json({ denied: 'You do not have permission to do that!'});
+		} else {
+			foundCampground.remove(req.params.id, function(err, message){
+		    if(err){
+		       res.status(500).json({ err: 'There was a problem deleting the campground, please try again later' });
+		      }
+		      res.status(201).json({ message: 'Succesfully deleted the campground!' });
+		  });
+		}
+	});
 }

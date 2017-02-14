@@ -29,14 +29,15 @@ exports.signedin = function(req, res, next) {
         return next(err)
       }
       if (!existingUser) { return next(null, false); }
-      res.status(200).json({ user: existingUser.username, joinedAt: existingUser.joinedAt, favorites: existingUser.favorites });
+      res.status(200).json({ user: existingUser.username, joinedAt: existingUser.joinedAt, favorites: existingUser.favorites, message: 'Welcome back to Yelp Camp!' });
     })
 }
 
 
 exports.signin = function(req, res, next) {
-  const encodedId = userHelper.encode(req.user._id.toString())
+
   const userId = req.user._id; // pulled
+  const encodedId = userHelper.encode(userId.toString())
   const campgroundFields = { id: 1, name: 1, location: 1 }
     User.findById(userId)
     .populate({
@@ -54,7 +55,7 @@ exports.signin = function(req, res, next) {
       }
       if (!existingUser) { return next(null, false); }
 
-      res.status(200).json({ token: tokenForUser(req.user), userId: encodedId, user: existingUser.username, joinedAt: existingUser.joinedAt, favorites: existingUser.favorites });
+      res.status(200).json({ token: tokenForUser(req.user), userId: encodedId, user: existingUser.username, joinedAt: existingUser.joinedAt, favorites: existingUser.favorites, message: 'Welcome back to Yelp Camp!' });
     })
 }
 
@@ -93,7 +94,7 @@ exports.signup = function (req, res, next) {
 
       const encodedId = userHelper.encode(user._id.toString());
       // respond to request indicating the user was created
-      res.json({ token: tokenForUser(user), userId: encodedId, user: user.username, joinedAt:user.joinedAt, favorites: user.favorites, message: 'Succesfully signed up! Welcome to yelp camp!'  });
+      res.json({ token: tokenForUser(user), userId: encodedId, user: user.username, joinedAt:user.joinedAt, favorites: user.favorites, message: 'Succesfully signed up! Welcome to Yelp Camp!'  });
     });
   });
 }
