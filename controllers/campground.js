@@ -28,7 +28,6 @@ exports.createCampground = function(req, res){
 exports.showCampgrounds = function(req, res){
 Campground.findById(req.params.id).populate("comments").exec(function(err, foundCampground){
   if(err){
-
       res.status(404).json({ err: 'There was a problem locating the campground, please try again later' });
     } else if (!foundCampground) {
 			res.status(404).json({ err: 'There was a problem locating the campground. It was either deleted or does not exist!' });

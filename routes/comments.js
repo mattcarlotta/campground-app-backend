@@ -9,8 +9,8 @@ const auth = require('../middleware/userHelper');
 
 const requireToken = passport.authenticate('jwt', { session: false });
 
-app.post("/new", requireToken, Comment.createComment);
-app.put("/edit/:id", requireToken, Comment.updateComment);
-app.post("/delete/:id", requireToken, Comment.deleteComment);
+app.post("/new", requireToken, auth.isLoggedIn, Comment.createComment);
+app.put("/edit/:id", requireToken, auth.isLoggedIn, Comment.updateComment);
+app.delete("/delete/:id", requireToken, auth.isLoggedIn, Comment.deleteComment);
 
 module.exports = app;

@@ -14,23 +14,24 @@ function tokenForUser(user) {
 exports.signedin = function(req, res, next) {
   const userId = req.user; // pulled from userHelper isLoggedIn middleware
   const campgroundFields = { id: 1, name: 1, location: 1 }
-    User.findById(userId)
-    .populate({
-        path:"favorites",
-        select: 'campground',
-        populate:{
-          path: 'campground',
-          select: campgroundFields,
-        }
-     })
-    .exec(function(err, existingUser) {
-      if (err) {
-        res.status(401).json({ err: 'There was a problem with your login credentials. Please sign in again!' });
-        return next(err)
+  User.findById(userId)
+  .populate({
+      path:"favorites",
+      select: 'campground',
+      populate:{
+        path: 'campground',
+        select: campgroundFields,
       }
-      if (!existingUser) { return next(null, false); }
-      res.status(200).json({ user: existingUser.username, joinedAt: existingUser.joinedAt, favorites: existingUser.favorites, message: 'Welcome back to Yelp Camp!' });
-    })
+   })
+  .exec(function(err, existingUser) {
+    if (err) {
+      res.status(401).json({ err: 'There was a problem with your login credentials. Please sign in again!' });
+      return next(err)
+    }
+    if (!existingUser) { return next(null, false); }
+    res.status(200).json({ user: existingUser.username, joinedAt: existingUser.joinedAt, favorites: existingUser.favorites, message: 'Welcome back to Yelp Camp!' });
+  })
+
 }
 
 exports.signin = function(req, res, next) {
@@ -60,6 +61,7 @@ exports.signin = function(req, res, next) {
   })
   .catch((err) => {
     console.log(err);
+    res.status(403).json({ err: 'There was a problem with your login credentials. Please sign in again!' });
   });
 }
 
@@ -96,9 +98,15 @@ exports.signup = function (req, res, next) {
         return next(err)
       }
 
-      const encodedId = userHelper.encode(user._id.toString());
-      // respond to request indicating the user was created
-      res.json({ token: tokenForUser(user), userId: encodedId, user: user.username, joinedAt:user.joinedAt, favorites: user.favorites, message: 'Succesfully signed up! Welcome to Yelp Camp!'  });
+      userHelper.encode(user._id.toString()).then((hex) => {
+        const encodedId = hex;
+
+        res.json({ token: tokenForUser(user), userId: encodedId, user: user.username, joinedAt:user.joinedAt, favorites: user.favorites, message: 'Succesfully signed up! Welcome to Yelp Camp!'  });
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(403).json({ err: 'There was a problem siging you up. Please notify the admin!' });
+      });
     });
   });
 }
