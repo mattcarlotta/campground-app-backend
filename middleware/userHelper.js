@@ -5,37 +5,23 @@ const bcrypt = require('bcrypt-nodejs');
 const User = require('../models/user');
 const userHelper = require('../helpers/helpers');
 
+exports.isLoggedIn = function (req, res, done) {
+  const decodedId = req.query.userId ? req.query.userId : req.params.id;
 
-exports.isLoggedIn = isLoggedIn;
-
-
-function encryptCurrentUser (req, res, done) {
-  const username = req.body.author;
-
-  User.findOne({ username: username }).exec(function(err, existingUser) {
-    if (err) return done(({ "err": err } ));
-    if (!existingUser) return done(({ "err": err } ));
-
-    const author = {
-      id: existingUser._id,
-      username: existingUser.username
-    }
-
-    req.author = author;
-    done();
-  });
-}
-
-function isLoggedIn (req, res, done) {
-  const decodedId = req.query.userId ? userHelper.decode(req.query.userId) : userHelper.decode(req.params.id)
-
-  User.findById(decodedId).exec(function(err, user) {
-    if (err || !user) {
-      res.status(401).json({ err: 'There was a problem with your login credentials. Please sign in again!' });
+  userHelper.decode(decodedId).then((str) => {
+    console.log(str);
+    userId = str;
+    User.findById(userId).exec(function(err, user) {
+      if (err || !user) {
+        res.status(401).json({ err: 'There was a problem with your login credentials. Please sign in again!' });
+        return done();
+      }
+      req.user = user._id;
+      req.username = user.username;
       return done();
-    }
-    req.user = user._id;
-    req.username = user.username;
-    return done();
-  })
+    })
+    .catch((err) => {
+      res.status(404).json({ err: 'Could not locate user, please try again!'})
+    });
+  });
 }

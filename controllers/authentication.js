@@ -33,11 +33,11 @@ exports.signedin = function(req, res, next) {
     })
 }
 
-
 exports.signin = function(req, res, next) {
 
   const userId = req.user._id; // pulled
-  const encodedId = userHelper.encode(userId.toString())
+  userHelper.encode(userId.toString()).then((hex) => {
+  const encodedId = hex;
   const campgroundFields = { id: 1, name: 1, location: 1 }
     User.findById(userId)
     .populate({
@@ -57,6 +57,10 @@ exports.signin = function(req, res, next) {
 
       res.status(200).json({ token: tokenForUser(req.user), userId: encodedId, user: existingUser.username, joinedAt: existingUser.joinedAt, favorites: existingUser.favorites, message: 'Welcome back to Yelp Camp!' });
     })
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 }
 
 exports.signup = function (req, res, next) {

@@ -12,13 +12,17 @@ exports.indexCampgrounds = function(req, res){
 
 exports.createCampground = function(req, res){
 	const newCampground = req.body;
-  Campground.create(newCampground, function(err, message){
-    if(err){
-        res.status(500).json({ err: 'There was a problem creating the campground, please try again later' });
-      } else {
-        res.status(201).json({ message: 'Succesfully added a new campground!' });
-      }
-  });
+	if (!req.user) {
+		res.status(403).json({ err: 'You must be logged in to do that!'})
+	} else {
+		Campground.create(newCampground, function(err, message){
+			if(err){
+					res.status(500).json({ err: 'There was a problem creating the campground, please try again later' });
+				} else {
+					res.status(201).json({ message: 'Succesfully added a new campground!' });
+				}
+		});
+	}
 }
 
 exports.showCampgrounds = function(req, res){
