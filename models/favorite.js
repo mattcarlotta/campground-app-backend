@@ -9,13 +9,4 @@ const favoriteSchema = mongoose.Schema({
     }
 });
 
-favoriteSchema.pre('update', function (next) {
-    let favorite = this;
-    favorite.model('User').update(
-        { favorites: favorite._id },
-        { $pull: { favorites: favorite._id } },
-        { multi: true },
-        next);
-});
-
 module.exports = mongoose.model("Favorite", favoriteSchema);
