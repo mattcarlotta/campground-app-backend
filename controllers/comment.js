@@ -39,24 +39,18 @@ exports.updateComment = function(req, res){
 //============================================================//
 exports.deleteComment = function(req, res){
   Comment.findById(req.params.id, function(err, foundComment) {
-    if (req.username !== foundComment.author) {
-        console.log('triggered', req.username, foundComment.author);
-        res.status(403).json({ denied: 'You do not have permission to do that!'});
-    } else {
-      foundComment.remove(req.params.id, function(err) {
-        if (err) {
-    			res.status(404).json({ err: 'There was a problem removing the comment, please try again later' });
-        }
-        Campground.findById(req.query.campgroundId, function(err, foundCampground){
-          if(err || !foundCampground){
-            res.status(500).json({ err: 'There was a problem updating the comment, please try again later' });
-          } else {
-            foundCampground.comments.remove(req.params.id);
-            foundCampground.save();
-            res.status(201).json({ message: 'Succesfully deleted the comment!' });
-          }
-        });
+    if (req.username !== foundComment.author) res.status(403).json({ denied: 'You do not have permission to do that!'});
+
+    else foundComment.remove(req.params.id, function(err) {
+        if (err) res.status(404).json({ err: 'There was a problem removing the comment, please try again later' });
+
+        else Campground.findById(req.query.campgroundId, function(err, foundCampground){
+          if (err || !foundCampground) res.status(500).json({ err: 'There was a problem updating the comment, please try again later' });
+
+        else foundCampground.comments.remove(req.params.id);
+          foundCampground.save();
+          res.status(201).json({ message: 'Succesfully deleted the comment!' });
       });
-    }
+    });
   });
 }

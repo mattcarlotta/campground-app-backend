@@ -29,9 +29,9 @@ exports.signedin = function(req, res, next) {
       return next(err)
     }
     if (!existingUser) { return next(null, false); }
-    res.status(200).json({ user: existingUser.username, joinedAt: existingUser.joinedAt, favorites: existingUser.favorites, message: 'Welcome back to Yelp Camp!' });
-  })
 
+    res.status(200).json({ user: existingUser.username, joinedAt: existingUser.joinedAt, favorites: existingUser.favorites, message: 'Welcome back to Yelp Camp!' });
+  });
 }
 
 exports.signin = function(req, res, next) {
@@ -60,7 +60,6 @@ exports.signin = function(req, res, next) {
     })
   })
   .catch((err) => {
-    console.log(err);
     res.status(403).json({ err: 'There was a problem with your login credentials. Please sign in again!' });
   });
 }
@@ -104,7 +103,6 @@ exports.signup = function (req, res, next) {
         res.json({ token: tokenForUser(user), userId: encodedId, user: user.username, joinedAt:user.joinedAt, favorites: user.favorites, message: 'Succesfully signed up! Welcome to Yelp Camp!'  });
       })
       .catch((err) => {
-        console.log(err);
         res.status(403).json({ err: 'There was a problem siging you up. Please notify the admin!' });
       });
     });
